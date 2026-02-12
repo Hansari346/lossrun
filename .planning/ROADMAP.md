@@ -68,10 +68,10 @@ Plans:
 **Plans:** 4 plans in 3 waves
 
 Plans:
-- [ ] 02-01-PLAN.md — Types, robust date parsing, robust currency parsing (Wave 1)
-- [ ] 02-02-PLAN.md — Smart sheet analysis, composite field detection, expanded synonym dictionary (Wave 2)
-- [ ] 02-03-PLAN.md — Validation engine with row-level error accumulation, store signals (Wave 2)
-- [ ] 02-04-PLAN.md — Integration: parsing pipeline rewrite + upload UI with validation feedback (Wave 3)
+- [x] 02-01-PLAN.md — Types, robust date parsing, robust currency parsing (Wave 1)
+- [x] 02-02-PLAN.md — Smart sheet analysis, composite field detection, expanded synonym dictionary (Wave 2)
+- [x] 02-03-PLAN.md — Validation engine with row-level error accumulation, store signals (Wave 2)
+- [x] 02-04-PLAN.md — Integration: parsing pipeline rewrite + upload UI with validation feedback + content-based fallback detection (Wave 3)
 
 **Implementation Notes:**
 - This is the highest-risk, highest-value phase — everything downstream depends on correct data

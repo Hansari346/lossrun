@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 | Phase | Status | Started | Completed |
 |-------|--------|---------|-----------|
 | 1 — Foundation & Build Infrastructure | Complete | 2026-02-12 | 2026-02-12 |
-| 2 — Data Ingestion Pipeline | In Progress | 2026-02-12 | — |
+| 2 — Data Ingestion Pipeline | Complete | 2026-02-12 | 2026-02-12 |
 | 3 — Calculation Engine & Dimension Detection | Not Started | — | — |
 | 4 — Adaptive Visualization & Data Tables | Not Started | — | — |
 | 5 — PowerPoint Export | Not Started | — | — |
@@ -18,12 +18,12 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 2 of 6 (Data Ingestion Pipeline)
-Plan: 3 of 4 in phase 2
-Status: In progress
-Last activity: 2026-02-12 - Completed 02-03-PLAN.md (validation engine & store signals)
+Phase: 2 of 6 (Data Ingestion Pipeline) — COMPLETE, ready for Phase 3
+Plan: 4 of 4 in phase 2 (all complete)
+Status: Phase 2 complete, pending verification
+Last activity: 2026-02-12 - Completed 02-04-PLAN.md (integration + content-based fallback detection)
 
-Progress: ████████░░░░░░ 8/14 plans (57%)
+Progress: ████████████░░ 12/14 plans (~86% through Phase 2 of 6 total)
 
 ## Accumulated Context
 
@@ -52,6 +52,9 @@ Progress: ████████░░░░░░ 8/14 plans (57%)
 - 2026-02-12: Composite overrides passed as Record<string,string> to keep validation decoupled from composite-fields
 - 2026-02-12: Optional field parse failures produce warnings but don't skip rows
 - 2026-02-12: Error categorization by field name substring matching (date/incurred/amount)
+- 2026-02-12: Content-based detection scores capped at 25-45 (below header threshold of 50) so header matches always win
+- 2026-02-12: Detection priority order prevents two fields claiming the same column
+- 2026-02-12: Domain keyword Sets (body parts, causes, categories) for content-based field detection — extensible for new carriers
 
 ### Blockers
 None
@@ -62,7 +65,7 @@ None
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed 02-03-PLAN.md
+Stopped at: Phase 2 complete, ready for verification then Phase 3
 Resume file: None
 
 ## Session Log
@@ -75,6 +78,8 @@ Resume file: None
 - 2026-02-12: Executed 02-01 — ParseResult<T> types, date-utils (6 format parsers + Excel serial), currency-utils (parens/European/$$)
 - 2026-02-12: Executed 02-02 — Sheet analysis (rankSheets scoring), composite field detection (Key:Value parsing), expanded synonym dictionary (159 hints across 9 fields)
 - 2026-02-12: Executed 02-03 — Validation engine (validateAndParseRow, accumulateErrors) + store signals (validationSummary, sheetScores, compositeFields, hasValidationErrors)
+- 2026-02-12: Executed 02-04 — Integration: parsing pipeline rewrite + upload UI with validation feedback + content-based fallback column detection for all 9 fields
+- 2026-02-12: Phase 2 deployed to lossrun.voxelplatform.com — all 4 plans complete
 
 ---
 *Last updated: 2026-02-12*
