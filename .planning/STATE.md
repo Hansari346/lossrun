@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 | Phase | Status | Started | Completed |
 |-------|--------|---------|-----------|
 | 1 — Foundation & Build Infrastructure | Complete | 2026-02-12 | 2026-02-12 |
-| 2 — Data Ingestion Pipeline | Not Started | — | — |
+| 2 — Data Ingestion Pipeline | In Progress | 2026-02-12 | — |
 | 3 — Calculation Engine & Dimension Detection | Not Started | — | — |
 | 4 — Adaptive Visualization & Data Tables | Not Started | — | — |
 | 5 — PowerPoint Export | Not Started | — | — |
@@ -18,12 +18,12 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation & Build Infrastructure) — COMPLETE
-Plan: 4 of 4 in phase 1
-Status: Phase complete, verified
-Last activity: 2026-02-12 - Phase 1 verified (14/14 must-haves passed)
+Phase: 2 of 6 (Data Ingestion Pipeline)
+Plan: 1 of 4 in phase 2
+Status: In progress
+Last activity: 2026-02-12 - Completed 02-01-PLAN.md (types & parsing utilities)
 
-Progress: ████░░░░░░░░░░ 4/14 plans (29%)
+Progress: █████░░░░░░░░░ 5/14 plans (36%)
 
 ## Accumulated Context
 
@@ -41,6 +41,10 @@ Progress: ████░░░░░░░░░░ 4/14 plans (29%)
 - 2026-02-12: drawCharts receives filteredData + allData + canvas refs + params — fully DOM-free
 - 2026-02-12: indirectMult default=1.3, headcount default=150 (matching monolith)
 - 2026-02-12: populateAdjustmentsFromData sets avgCost and injuries from 2-3 year average of ingested data
+- 2026-02-12: ParseResult<T> as universal return type for all parsing functions (value+error+raw, never silent null)
+- 2026-02-12: Never use new Date(string) for numeric date formats — regex extraction is deterministic
+- 2026-02-12: European currency format detected by comma-before-2-digits heuristic
+- 2026-02-12: Lotus 1-2-3 bug correction in Excel serial → Date conversion
 
 ### Blockers
 None
@@ -51,7 +55,7 @@ None
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Phase 1 complete
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
 
 ## Session Log
@@ -61,6 +65,7 @@ Resume file: None
 - 2026-02-12: Executed 01-03 — Calculation engine, 11 Chart.js charts, PPT export — all as pure typed modules
 - 2026-02-12: Executed 01-04 — Adjustments page, results page, app wiring, deploy, human verification
 - 2026-02-12: Phase 1 verified — 14/14 must-haves passed, INFRA-01/02/03 marked complete
+- 2026-02-12: Executed 02-01 — ParseResult<T> types, date-utils (6 format parsers + Excel serial), currency-utils (parens/European/$$)
 
 ---
 *Last updated: 2026-02-12*
