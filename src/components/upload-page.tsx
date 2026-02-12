@@ -7,6 +7,10 @@ import {
   statusMessage,
   canonicalData,
   currentSheetName,
+  validationSummary,
+  sheetScores,
+  compositeFields,
+  hasValidationErrors,
 } from "../state/store";
 import {
   handleFileSelect,
@@ -50,6 +54,7 @@ export function UploadPage() {
     overrides.value = {};
     const result = handleSheetSelect(select.value);
     sampleData.value = result?.sampleData ?? null;
+    // compositeFields are written to store signal by handleSheetSelect directly
   }
 
   function onApply() {
@@ -133,13 +138,37 @@ export function UploadPage() {
                 {sheets.length === 0 ? (
                   <option value="">Select a file first&hellip;</option>
                 ) : (
-                  sheets.map((name) => (
-                    <option key={name} value={name}>
-                      {name}
-                    </option>
-                  ))
+                  sheets.map((name) => {
+                    const scoreObj = sheetScores.value.find(
+                      (s) => s.sheetName === name,
+                    );
+                    const scoreLabel = scoreObj
+                      ? ` (score: ${scoreObj.score})`
+                      : "";
+                    return (
+                      <option key={name} value={name}>
+                        {name}
+                        {scoreLabel}
+                      </option>
+                    );
+                  })
                 )}
               </select>
+              {sheetScores.value.length > 1 && (
+                <p
+                  class="small"
+                  style={{ marginTop: "4px", color: "#666" }}
+                >
+                  Auto-selected best match.{" "}
+                  {sheetScores.value[0] && (
+                    <span
+                      title={sheetScores.value[0].reasons.join(", ")}
+                    >
+                      Score: {sheetScores.value[0].score}
+                    </span>
+                  )}
+                </p>
+              )}
             </div>
 
             {statusMessage.value && (
@@ -170,6 +199,25 @@ export function UploadPage() {
               </div>
             ) : (
               <div>
+                {compositeFields.value.length > 0 && (
+                  <div
+                    class="status"
+                    style={{
+                      marginBottom: "8px",
+                      background: "#f0f7ff",
+                      border: "1px solid #cce0ff",
+                    }}
+                  >
+                    <strong>Composite fields detected:</strong>{" "}
+                    {compositeFields.value.map((cf, i) => (
+                      <span key={cf.columnIndex}>
+                        {i > 0 && "; "}
+                        {cf.headerName} &rarr;{" "}
+                        {cf.extractedKeys.join(", ")}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <table class="mapping-table">
                   <thead>
                     <tr>
@@ -241,10 +289,61 @@ export function UploadPage() {
                   <button onClick={onApply}>
                     Apply mapping &amp; load data
                   </button>
-                  {canonicalData.value.length > 0 && (
-                    <span class="status ok">
-                      {canonicalData.value.length} rows loaded
-                    </span>
+                  {validationSummary.value ? (
+                    <div
+                      class="status"
+                      style={
+                        validationSummary.value.skippedRows > 0
+                          ? {
+                              background: "#fff8e1",
+                              border: "1px solid #ffcc02",
+                            }
+                          : {}
+                      }
+                    >
+                      <strong>{validationSummary.value.validRows}</strong>{" "}
+                      valid rows of {validationSummary.value.totalRows}{" "}
+                      total.
+                      {validationSummary.value.skippedRows > 0 && (
+                        <span>
+                          {" "}
+                          <strong>
+                            {validationSummary.value.skippedRows}
+                          </strong>{" "}
+                          skipped
+                          {validationSummary.value.unparsableDates >
+                            0 && (
+                            <span>
+                              {" "}
+                              ({validationSummary.value.unparsableDates}{" "}
+                              unparsable dates)
+                            </span>
+                          )}
+                          {validationSummary.value.invalidAmounts >
+                            0 && (
+                            <span>
+                              {" "}
+                              ({validationSummary.value.invalidAmounts}{" "}
+                              invalid amounts)
+                            </span>
+                          )}
+                          {validationSummary.value.missingRequired >
+                            0 && (
+                            <span>
+                              {" "}
+                              ({validationSummary.value.missingRequired}{" "}
+                              missing required fields)
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    canonicalData.value.length > 0 && (
+                      <span class="status ok">
+                        {canonicalData.value.length} rows loaded
+                      </span>
+                    )
                   )}
                 </div>
               </div>
