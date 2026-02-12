@@ -106,40 +106,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | — | Pending |
-| INFRA-02 | — | Pending |
-| INFRA-03 | — | Pending |
-| INFRA-04 | — | Pending |
-| INFRA-05 | — | Pending |
-| INGEST-01 | — | Pending |
-| INGEST-02 | — | Pending |
-| INGEST-03 | — | Pending |
-| INGEST-04 | — | Pending |
-| INGEST-05 | — | Pending |
-| INGEST-06 | — | Pending |
-| DIM-01 | — | Pending |
-| DIM-02 | — | Pending |
-| DIM-03 | — | Pending |
-| VIS-01 | — | Pending |
-| VIS-02 | — | Pending |
-| VIS-03 | — | Pending |
-| VIS-04 | — | Pending |
-| VIS-05 | — | Pending |
-| VIS-06 | — | Pending |
-| PPT-01 | — | Pending |
-| PPT-02 | — | Pending |
-| PPT-03 | — | Pending |
-| PPT-04 | — | Pending |
-| PPT-05 | — | Pending |
-| XLS-01 | — | Pending |
-| XLS-02 | — | Pending |
-| XLS-03 | — | Pending |
+| INFRA-01 | Phase 1 — Foundation & Build Infrastructure | Pending |
+| INFRA-02 | Phase 1 — Foundation & Build Infrastructure | Pending |
+| INFRA-03 | Phase 1 — Foundation & Build Infrastructure | Pending |
+| INFRA-04 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
+| INFRA-05 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
+| INGEST-01 | Phase 2 — Data Ingestion Pipeline | Pending |
+| INGEST-02 | Phase 2 — Data Ingestion Pipeline | Pending |
+| INGEST-03 | Phase 2 — Data Ingestion Pipeline | Pending |
+| INGEST-04 | Phase 2 — Data Ingestion Pipeline | Pending |
+| INGEST-05 | Phase 2 — Data Ingestion Pipeline | Pending |
+| INGEST-06 | Phase 2 — Data Ingestion Pipeline | Pending |
+| DIM-01 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
+| DIM-02 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
+| DIM-03 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
+| VIS-01 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
+| VIS-02 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
+| VIS-03 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
+| VIS-04 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
+| VIS-05 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
+| VIS-06 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
+| PPT-01 | Phase 5 — PowerPoint Export | Pending |
+| PPT-02 | Phase 5 — PowerPoint Export | Pending |
+| PPT-03 | Phase 5 — PowerPoint Export | Pending |
+| PPT-04 | Phase 5 — PowerPoint Export | Pending |
+| PPT-05 | Phase 5 — PowerPoint Export | Pending |
+| XLS-01 | Phase 6 — Excel Export | Pending |
+| XLS-02 | Phase 6 — Excel Export | Pending |
+| XLS-03 | Phase 6 — Excel Export | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 ⚠️
+- Mapped to phases: 28 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-12*
-*Last updated: 2026-02-12 after initial definition*
+*Last updated: 2026-02-12 after roadmap creation*
