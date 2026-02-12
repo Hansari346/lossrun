@@ -11,7 +11,7 @@
 |---|-------|------|--------------|------------------|
 | 1 | Foundation & Build Infrastructure | Decompose the monolith into modular TypeScript with proper build tooling while preserving all existing functionality | INFRA-01, INFRA-02, INFRA-03 | 4 criteria |
 | 2 | Data Ingestion Pipeline | Reliably ingest any carrier's loss run format with transparent validation feedback | INGEST-01, INGEST-02, INGEST-03, INGEST-04, INGEST-05, INGEST-06 | 5 criteria | 4 plans in 3 waves |
-| 3 | Calculation Engine & Dimension Detection | Decouple calculations from the UI and detect which analysis dimensions are available in the data | INFRA-04, INFRA-05, DIM-01, DIM-02, DIM-03 | 4 criteria |
+| 3 | Calculation Engine & Dimension Detection | Decouple calculations from the UI and detect which analysis dimensions are available in the data | INFRA-04, INFRA-05, DIM-01, DIM-02, DIM-03 | 4 criteria | 2 plans in 2 waves |
 | 4 | Adaptive Visualization & Data Tables | Charts and tables render adaptively based on available data — no empty charts, data tables alongside every chart | VIS-01, VIS-02, VIS-03, VIS-04, VIS-05, VIS-06 | 5 criteria |
 | 5 | PowerPoint Export | Professional Voxel-branded deck with narrative structure that adapts to available data | PPT-01, PPT-02, PPT-03, PPT-04, PPT-05 | 5 criteria |
 | 6 | Excel Export | Formatted multi-tab Excel workbook containing all underlying analysis data | XLS-01, XLS-02, XLS-03 | 3 criteria |
@@ -97,6 +97,12 @@ Plans:
 2. User sees a "Detected Dimensions" panel showing which analyses are available (e.g., "Cause of Loss: ✓, Department: ✓, Body Part: ✗, Lost Time: ✗")
 3. User can confirm or override detected dimensions before proceeding to results
 4. All charts, tables, and exports consume the same Results Object — no inconsistencies between what's shown on screen and what's exported
+
+**Plans:** 2 plans in 2 waves
+
+Plans:
+- [ ] 03-01-PLAN.md — Dimension types, detection module, and dimension-aware calculation engine
+- [ ] 03-02-PLAN.md — Reactive store signals, dimension panel UI, adjustments & results page wiring
 
 **Implementation Notes:**
 - The calculation engine must be pure functions: accept canonical data + adjustments → return Results Object
