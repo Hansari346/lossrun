@@ -36,7 +36,7 @@
 
 Plans:
 - [x] 01-01-PLAN.md — Build Toolchain & Foundation (config, types, store, CSS extraction)
-- [ ] 01-02-PLAN.md — Input Pipeline: formatting, field-mapping, parsing libs + nav & upload page
+- [x] 01-02-PLAN.md — Input Pipeline: formatting, field-mapping, parsing libs + nav & upload page
 - [ ] 01-03-PLAN.md — Output Pipeline: calculations, charts, PPT export libs (parallel with 01-02)
 - [ ] 01-04-PLAN.md — Adjustments page, results page, app wiring, deploy & verify
 
