@@ -4,6 +4,9 @@ import type {
   Mappings,
   AdjustmentParams,
   CalculationResults,
+  ValidationSummary,
+  SheetScore,
+  CompositeField,
 } from "../types";
 
 // === Core data signals (replacing 6 global variables from monolith) ===
@@ -58,11 +61,24 @@ export const availableSites = signal<string[]>([]);
 export const isCalculating = signal<boolean>(false);
 export const statusMessage = signal<string>("");
 
+// === Validation state ===
+export const validationSummary = signal<ValidationSummary | null>(null);
+
+// === Sheet analysis state ===
+export const sheetScores = signal<SheetScore[]>([]);
+
+// === Composite field state ===
+export const compositeFields = signal<CompositeField[]>([]);
+
 // === Derived state ===
 export const hasData = computed(() => canonicalData.value.length > 0);
 export const sheetNames = computed(() => {
   const wb = workbook.value;
   return wb ? (wb.SheetNames as string[]) ?? [] : [];
+});
+export const hasValidationErrors = computed(() => {
+  const vs = validationSummary.value;
+  return vs !== null && vs.skippedRows > 0;
 });
 
 // === Reset ===
@@ -78,4 +94,7 @@ export function resetState() {
   selectedSite.value = "all";
   availableSites.value = [];
   statusMessage.value = "";
+  validationSummary.value = null;
+  sheetScores.value = [];
+  compositeFields.value = [];
 }
