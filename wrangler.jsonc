@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lossrun",
+  "compatibility_date": "2025-12-10",
+  "assets": {
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    {
+      "pattern": "lossrun.voxelplatform.com",
+      "zone_name": "voxelplatform.com",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    }
+  }
+}
