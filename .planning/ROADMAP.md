@@ -32,6 +32,14 @@
 3. Source code lives in separate TypeScript files organized by responsibility (parsing, calculations, UI, exports)
 4. Application state is managed through a centralized store — business logic does not read from or write to DOM elements
 
+**Plans:** 4 plans in 3 waves
+
+Plans:
+- [ ] 01-01-PLAN.md — Build Toolchain & Foundation (config, types, store, CSS extraction)
+- [ ] 01-02-PLAN.md — Input Pipeline: formatting, field-mapping, parsing libs + nav & upload page
+- [ ] 01-03-PLAN.md — Output Pipeline: calculations, charts, PPT export libs (parallel with 01-02)
+- [ ] 01-04-PLAN.md — Adjustments page, results page, app wiring, deploy & verify
+
 **Implementation Notes:**
 - Keep `src/worker.js` as a fallback reference until the new code path is fully validated
 - Vite + `@cloudflare/vite-plugin` provides HMR, TypeScript, and prod-parity via `workerd`
