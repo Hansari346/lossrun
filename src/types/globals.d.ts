@@ -2,4 +2,4 @@
 // These will be replaced by proper npm imports in later phases
 declare const XLSX: any;
 declare const Chart: any;
-declare const pptxgen: any;
+declare const PptxGenJS: any;
