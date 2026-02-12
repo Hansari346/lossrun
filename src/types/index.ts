@@ -147,3 +147,47 @@ export interface SiteBreakdown {
   incurred: number;
   avgCost: number;
 }
+
+// ── Ingestion Pipeline Types ──────────────────────────────────────────
+
+/** Generic parse-or-report result — universal return type for all parsing functions */
+export interface ParseResult<T> {
+  value: T | null;
+  error: string | null;
+  raw: string;
+}
+
+/** Per-row validation error */
+export interface RowError {
+  rowIndex: number;
+  field: string;
+  message: string;
+  rawValue: string;
+}
+
+/** Aggregated validation output for a parsed sheet */
+export interface ValidationSummary {
+  totalRows: number;
+  validRows: number;
+  skippedRows: number;
+  errors: RowError[];
+  warnings: string[];
+  unparsableDates: number;
+  invalidAmounts: number;
+  missingRequired: number;
+}
+
+/** Sheet ranking result for multi-sheet workbooks */
+export interface SheetScore {
+  sheetName: string;
+  score: number;
+  reasons: string[];
+}
+
+/** Detected Key:Value column for composite field extraction */
+export interface CompositeField {
+  columnIndex: number;
+  headerName: string;
+  extractedKeys: string[];
+  keyFrequency: Map<string, number>;
+}
