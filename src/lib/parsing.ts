@@ -8,13 +8,26 @@ import {
   selectedSite,
   adjustments,
   statusMessage,
+  validationSummary,
+  sheetScores,
+  compositeFields as compositeFieldsSignal,
 } from "../state/store";
 import {
   findBestMatch,
   requiredFields,
   optionalFields,
 } from "./field-mapping";
-import type { CanonicalRecord, Mappings } from "../types";
+import { rankSheets } from "./sheet-analysis";
+import {
+  detectCompositeFields,
+  extractCompositeValue,
+} from "./composite-fields";
+import {
+  validateAndParseRow,
+  createEmptyValidationSummary,
+  accumulateErrors,
+} from "./validation";
+import type { CanonicalRecord, CompositeField, Mappings } from "../types";
 
 // ── Internal state ──────────────────────────────────────────────────────────
 
@@ -44,7 +57,7 @@ export function handleFileSelect(file: File): void {
   reader.onload = (e: ProgressEvent<FileReader>) => {
     try {
       const data = new Uint8Array(e.target!.result as ArrayBuffer);
-      const wb = XLSX.read(data, { type: "array" });
+      const wb = XLSX.read(data, { type: "array", cellDates: true });
 
       const sheetNames: string[] = wb.SheetNames || [];
       if (!sheetNames.length) {
@@ -52,11 +65,16 @@ export function handleFileSelect(file: File): void {
       }
 
       workbook.value = wb;
-      currentSheetName.value = sheetNames[0];
-      statusMessage.value = `Loaded workbook with ${sheetNames.length} sheet(s). Select a sheet and map fields.`;
 
-      // Auto-run header detection on the first sheet
-      handleSheetSelect(sheetNames[0]);
+      // Rank sheets and auto-select the best one
+      const scores = rankSheets(wb);
+      sheetScores.value = scores;
+      const bestSheet = scores[0]?.sheetName || sheetNames[0];
+      currentSheetName.value = bestSheet;
+      statusMessage.value = `Loaded workbook with ${sheetNames.length} sheet(s). Auto-selected '${bestSheet}' (score: ${scores[0]?.score}). Select a sheet and map fields.`;
+
+      // Auto-run header detection on the best sheet
+      handleSheetSelect(bestSheet);
     } catch (err: any) {
       console.error(err);
       statusMessage.value = "Error reading file: " + err.message;
@@ -142,7 +160,7 @@ export function findHeaderRow(rows: any[][]): HeaderResult {
  */
 export function handleSheetSelect(
   sheetName: string,
-): { sampleData: any[][] } | null {
+): { sampleData: any[][]; compositeFields: CompositeField[] } | null {
   const wb = workbook.value;
   if (!wb) return null;
 
@@ -151,7 +169,7 @@ export function handleSheetSelect(
   const ws = wb.Sheets[sheetName];
   const rows: any[][] = XLSX.utils.sheet_to_json(ws, {
     header: 1,
-    raw: false,
+    raw: true,
   });
 
   if (!rows.length) {
@@ -192,7 +210,21 @@ export function handleSheetSelect(
     }
   }
 
-  return { sampleData };
+  // Detect composite fields in all columns
+  const allColumnIndices = Array.from({ length: numColumns }, (_, i) => i);
+  const detectedCompositeFields = detectCompositeFields(
+    allColumnIndices,
+    result.headerRow,
+    sampleData,
+  );
+  compositeFieldsSignal.value = detectedCompositeFields;
+
+  if (detectedCompositeFields.length > 0) {
+    statusMessage.value +=
+      ` Detected ${detectedCompositeFields.length} composite field(s): ${detectedCompositeFields.map((cf) => cf.headerName).join(", ")}.`;
+  }
+
+  return { sampleData, compositeFields: detectedCompositeFields };
 }
 
 // ── Data loading ────────────────────────────────────────────────────────────
@@ -215,17 +247,17 @@ export function applyMappingAndLoad(
     return false;
   }
 
-  // Build header-name-based mappings from index overrides
+  // Build index-based mappings from overrides (fix: store INDEX, not header string)
   const newMappings: Mappings = {};
   for (const [key, idx] of Object.entries(mappingOverrides)) {
     if (idx >= 0 && idx < headers.length) {
-      newMappings[key] = headers[idx];
+      newMappings[key] = idx;
     }
   }
 
   // Validate required fields
   const missingRequired = Object.keys(requiredFields).filter(
-    (key) => !newMappings[key],
+    (key) => newMappings[key] === undefined,
   );
   if (missingRequired.length) {
     statusMessage.value =
@@ -238,78 +270,87 @@ export function applyMappingAndLoad(
   mappings.value = newMappings;
   statusMessage.value = "Mappings applied. Parsing rows\u2026";
 
-  // Parse sheet into JSON using the detected header row
+  // Parse sheet into JSON using the detected header row (raw: true preserves native types)
   const ws = wb.Sheets[sheet];
   const rawRows: Record<string, any>[] = XLSX.utils.sheet_to_json(ws, {
     header: headers,
     range: headerRowIndex + 1,
-    raw: false,
+    raw: true,
     defval: null,
   });
 
+  // Build composite field overrides lookup: canonical field → { columnIndex, key }
+  const compositeFieldMap: Record<
+    string,
+    { columnIndex: number; key: string }
+  > = {};
+  for (const cf of compositeFieldsSignal.value) {
+    for (const extractedKey of cf.extractedKeys) {
+      const keyLower = extractedKey.toLowerCase();
+      for (const [fieldName, fieldDef] of Object.entries(optionalFields)) {
+        if (
+          fieldDef.hints.some(
+            (hint: string) =>
+              keyLower.includes(hint) || hint.includes(keyLower),
+          )
+        ) {
+          // Only override if the field wasn't already mapped via column headers
+          if (
+            newMappings[fieldName] === undefined ||
+            newMappings[fieldName] === -1
+          ) {
+            compositeFieldMap[fieldName] = {
+              columnIndex: cf.columnIndex,
+              key: extractedKey,
+            };
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  // Validate and parse each row using the validation engine
+  const summary = createEmptyValidationSummary();
+  summary.totalRows = rawRows.length;
   const out: CanonicalRecord[] = [];
-  rawRows.forEach((row: Record<string, any>) => {
-    // Required fields
-    const siteName = (row[newMappings.site_name] || "").toString().trim();
-    const rawDate = row[newMappings.date_of_loss];
-    let parsedDate: Date | null = null;
-    if (rawDate) {
-      const d = new Date(rawDate);
-      if (!isNaN(d.getTime())) parsedDate = d;
+
+  rawRows.forEach((row, idx) => {
+    // Extract composite override values for this row
+    const compositeOverrides: Record<string, string> = {};
+    for (const [fieldName, { columnIndex, key }] of Object.entries(
+      compositeFieldMap,
+    )) {
+      const cellValue = row[headers[columnIndex]];
+      if (cellValue != null) {
+        const extracted = extractCompositeValue(String(cellValue), key);
+        if (extracted) {
+          compositeOverrides[fieldName] = extracted;
+        }
+      }
     }
-    let incurred = row[newMappings.total_incurred];
-    let incurredNum = parseFloat(
-      (typeof incurred === "string"
-        ? incurred.replace(/[$,]/g, "")
-        : incurred) || 0,
+
+    const { record, errors } = validateAndParseRow(
+      row,
+      newMappings,
+      headers,
+      idx + headerRowIndex + 2, // 1-based row number for user display
+      Object.keys(compositeOverrides).length > 0
+        ? compositeOverrides
+        : undefined,
     );
-    if (!isFinite(incurredNum)) incurredNum = 0;
-
-    if (!siteName || !parsedDate || !isFinite(incurredNum) || incurredNum <= 0) {
-      return;
+    if (record) {
+      out.push(record);
+      summary.validRows++;
+    } else {
+      summary.skippedRows++;
     }
-
-    const canon: CanonicalRecord = {
-      site_name: siteName,
-      date_of_loss: parsedDate,
-      total_incurred: incurredNum,
-    };
-
-    // Optional fields
-    if (newMappings.claim_number) {
-      canon.claim_number = (row[newMappings.claim_number] || "")
-        .toString()
-        .trim();
+    if (errors.length > 0) {
+      accumulateErrors(summary, errors);
     }
-    if (newMappings.claim_category) {
-      canon.claim_category = (row[newMappings.claim_category] || "")
-        .toString()
-        .trim();
-    }
-    if (newMappings.body_part) {
-      canon.body_part = (row[newMappings.body_part] || "").toString().trim();
-    }
-    if (newMappings.lost_days) {
-      const ld = row[newMappings.lost_days];
-      const ldNum = parseFloat(
-        (typeof ld === "string" ? ld.replace(/,/g, "") : ld) || 0,
-      );
-      canon.lost_days = isFinite(ldNum) && ldNum > 0 ? ldNum : 0;
-    }
-    if (newMappings.cause_of_loss) {
-      canon.cause_of_loss = (row[newMappings.cause_of_loss] || "")
-        .toString()
-        .trim();
-    }
-    if (newMappings.loss_description) {
-      canon.loss_description = (row[newMappings.loss_description] || "")
-        .toString()
-        .trim();
-    }
-
-    out.push(canon);
   });
 
+  validationSummary.value = summary;
   canonicalData.value = out;
 
   if (!out.length) {
@@ -318,7 +359,14 @@ export function applyMappingAndLoad(
     return false;
   }
 
-  statusMessage.value = `Parsed ${out.length} valid row(s). Proceed to adjustments.`;
+  statusMessage.value =
+    `Parsed ${out.length} valid row(s) of ${rawRows.length} total. ${summary.skippedRows} row(s) skipped.` +
+    (summary.unparsableDates > 0
+      ? ` ${summary.unparsableDates} unparsable date(s).`
+      : "") +
+    (summary.invalidAmounts > 0
+      ? ` ${summary.invalidAmounts} invalid amount(s).`
+      : "");
 
   // Populate site filter and auto-fill adjustments
   populateSiteFilter(out);
