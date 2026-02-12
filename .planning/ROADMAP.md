@@ -10,7 +10,7 @@
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 1 | Foundation & Build Infrastructure | Decompose the monolith into modular TypeScript with proper build tooling while preserving all existing functionality | INFRA-01, INFRA-02, INFRA-03 | 4 criteria |
-| 2 | Data Ingestion Pipeline | Reliably ingest any carrier's loss run format with transparent validation feedback | INGEST-01, INGEST-02, INGEST-03, INGEST-04, INGEST-05, INGEST-06 | 5 criteria |
+| 2 | Data Ingestion Pipeline | Reliably ingest any carrier's loss run format with transparent validation feedback | INGEST-01, INGEST-02, INGEST-03, INGEST-04, INGEST-05, INGEST-06 | 5 criteria | 4 plans in 3 waves |
 | 3 | Calculation Engine & Dimension Detection | Decouple calculations from the UI and detect which analysis dimensions are available in the data | INFRA-04, INFRA-05, DIM-01, DIM-02, DIM-03 | 4 criteria |
 | 4 | Adaptive Visualization & Data Tables | Charts and tables render adaptively based on available data — no empty charts, data tables alongside every chart | VIS-01, VIS-02, VIS-03, VIS-04, VIS-05, VIS-06 | 5 criteria |
 | 5 | PowerPoint Export | Professional Voxel-branded deck with narrative structure that adapts to available data | PPT-01, PPT-02, PPT-03, PPT-04, PPT-05 | 5 criteria |
@@ -64,6 +64,14 @@ Plans:
 3. User sees a validation summary after mapping showing row counts, parse errors, and data quality (e.g., "3 dates unparseable, 2 amounts invalid")
 4. Dates and currency amounts parse correctly regardless of format (MM/DD/YYYY, YYYY-MM-DD, SheetJS serial numbers, parenthetical negatives, $$ prefixes) — no silent row drops
 5. User can manually override any auto-mapped column assignment
+
+**Plans:** 4 plans in 3 waves
+
+Plans:
+- [ ] 02-01-PLAN.md — Types, robust date parsing, robust currency parsing (Wave 1)
+- [ ] 02-02-PLAN.md — Smart sheet analysis, composite field detection, expanded synonym dictionary (Wave 2)
+- [ ] 02-03-PLAN.md — Validation engine with row-level error accumulation, store signals (Wave 2)
+- [ ] 02-04-PLAN.md — Integration: parsing pipeline rewrite + upload UI with validation feedback (Wave 3)
 
 **Implementation Notes:**
 - This is the highest-risk, highest-value phase — everything downstream depends on correct data
