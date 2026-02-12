@@ -19,16 +19,32 @@ export const currentPage = signal<1 | 2 | 3>(1);
 
 // === Adjustment parameters (with defaults matching monolith's "Balanced" preset) ===
 export const adjustments = signal<AdjustmentParams>({
-  wcReduction: 40,
-  lostTimeReduction: 60,
-  retentionImprovement: 10,
-  miscCostReduction: 25,
-  obsSpeedImprovement: 1.5,
+  wcReduction: 65,
+  lostTimeReduction: 81,
+  retentionImprovement: 18,
+  miscCostReduction: 41,
+  obsSpeedImprovement: 2.0,
   isExistingCustomer: false,
   voxelStartYear: new Date().getFullYear(),
+  voxelStartMonth: 0,
   annualize: false,
   annualizeMonths: new Date().getMonth() + 1,
-  observationCost: 0,
+  annualizeRounding: "round",
+  avgCost: 0,
+  miscDirect: 0,
+  miscIndirect: 0,
+  indirectMult: 0,
+  injuries: 0,
+  headcount: 100,
+  supCount: 0,
+  shifts: 0,
+  rate: 0,
+  workdays: 0,
+  trainingHours: 0,
+  includeObs: false,
+  minObsManual: 0,
+  obsPerShift: 0,
+  totalAnnualObs: 0,
 });
 
 // === Calculation results ===

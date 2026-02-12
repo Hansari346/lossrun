@@ -26,38 +26,86 @@ export interface CanonicalRecord {
 
 /** User-configurable adjustment parameters */
 export interface AdjustmentParams {
+  // Improvement percentages (0–100 scale, converted to ratio in calculations)
   wcReduction: number;
   lostTimeReduction: number;
   retentionImprovement: number;
   miscCostReduction: number;
   obsSpeedImprovement: number;
+
+  // Customer mode
   isExistingCustomer: boolean;
   voxelStartYear: number;
+  voxelStartMonth: number;
+
+  // Annualization
   annualize: boolean;
   annualizeMonths: number;
-  observationCost: number;
+  annualizeRounding: "round" | "ceil" | "floor";
+
+  // Financial inputs
+  avgCost: number;
+  miscDirect: number;
+  miscIndirect: number;
+  indirectMult: number;
+  injuries: number;
+
+  // Org inputs
+  headcount: number;
+  supCount: number;
+  shifts: number;
+  rate: number;
+  workdays: number;
+  trainingHours: number;
+
+  // Observation inputs
+  includeObs: boolean;
+  minObsManual: number;
+  obsPerShift: number;
+  totalAnnualObs: number;
 }
 
 /** Output of the calculation engine — consumed by charts, KPI tiles, and exports */
 export interface CalculationResults {
-  // Counts
-  totalClaims: number;
-  moClaims: number;
-  indemnClaims: number;
-  // Costs
-  totalIncurred: number;
-  moIncurred: number;
-  indemnIncurred: number;
-  avgCostPerClaim: number;
-  // Derived metrics
-  trirCurrent: number;
+  // --- KPI tile values ---
+  directManual: number;
+  directImproved: number;
+  indirectManual: number;
+  indirectImproved: number;
+  obsManual: number;
+  obsImproved: number;
+  totalManual: number;
+  totalImproved: number;
+  annualSavings: number;
+
+  // Injuries & TRIR
+  injuriesManual: number;
+  injuriesImproved: number;
+  trirManual: number;
   trirImproved: number;
-  // Payback / ROI
-  currentTotal: number;
-  improvedTotal: number;
-  savings: number;
-  roi: number;
-  paybackMonths: number;
+
+  // Observation cost decomposition
+  costObsLaborManual: number;
+  costObsReportingManual: number;
+  costObsLaborImproved: number;
+  costObsReportingImproved: number;
+  costTraining: number;
+
+  // Payback (sigmoid ramp-up, 24 months)
+  paybackData: PaybackData;
+
+  // Year-1 realized savings (sigmoid-adjusted)
+  totalImprovedYear1: number;
+
+  // Annualization detail
+  annualizeDetail: string;
+
+  // Customer / prospect mode flag (passed through for charts/export)
+  isExistingCustomer: boolean;
+  voxelStartDate: Date | null;
+  wcReduction: number;
+  includeObs: boolean;
+
   // Per-year breakdown for trend charts
   yearlyData: YearlyBreakdown[];
   // Category breakdowns
@@ -66,8 +114,14 @@ export interface CalculationResults {
   causeBreakdown: CategoryBreakdown[];
   // Site comparison data
   siteComparison: SiteBreakdown[];
-  // Chart-specific data objects
-  chartData: Record<string, any>;
+}
+
+export interface PaybackData {
+  months: number[];
+  cumulativeSavings: number[];
+  cumulativeCost: number[];
+  netCashFlow: number[];
+  paybackMonth: number;
 }
 
 export interface YearlyBreakdown {
