@@ -3,13 +3,13 @@
 ## Project Reference
 See: .planning/PROJECT.md (updated 2026-02-12)
 **Core value:** Reliably ingest any carrier's loss run format and produce compelling analysis
-**Current focus:** Phase 1 — Foundation & Build Infrastructure
+**Current focus:** Phase 1 complete — ready for Phase 2
 
 ## Phase Status
 
 | Phase | Status | Started | Completed |
 |-------|--------|---------|-----------|
-| 1 — Foundation & Build Infrastructure | In Progress | 2026-02-12 | — |
+| 1 — Foundation & Build Infrastructure | Complete | 2026-02-12 | 2026-02-12 |
 | 2 — Data Ingestion Pipeline | Not Started | — | — |
 | 3 — Calculation Engine & Dimension Detection | Not Started | — | — |
 | 4 — Adaptive Visualization & Data Tables | Not Started | — | — |
@@ -18,12 +18,12 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation & Build Infrastructure)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-02-12 - Completed 01-03-PLAN.md
+Phase: 1 of 6 (Foundation & Build Infrastructure) — COMPLETE
+Plan: 4 of 4 in phase 1
+Status: Phase complete, verified
+Last activity: 2026-02-12 - Phase 1 verified (14/14 must-haves passed)
 
-Progress: ███░░░░░░░░░░░ 3/14 plans (21%)
+Progress: ████░░░░░░░░░░ 4/14 plans (29%)
 
 ## Accumulated Context
 
@@ -39,6 +39,8 @@ Progress: ███░░░░░░░░░░░ 3/14 plans (21%)
 - 2026-02-12: AdjustmentParams expanded to 24 fields; CalculationResults carries full KPI + payback + breakdowns
 - 2026-02-12: Preset values match monolith's actual applyPreset() (conservative=45/55, balanced=65/81, aggressive=80/90)
 - 2026-02-12: drawCharts receives filteredData + allData + canvas refs + params — fully DOM-free
+- 2026-02-12: indirectMult default=1.3, headcount default=150 (matching monolith)
+- 2026-02-12: populateAdjustmentsFromData sets avgCost and injuries from 2-3 year average of ingested data
 
 ### Blockers
 None
@@ -48,8 +50,8 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-12T11:47:07Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-02-12
+Stopped at: Phase 1 complete
 Resume file: None
 
 ## Session Log
@@ -57,6 +59,8 @@ Resume file: None
 - 2026-02-12: Executed 01-01 — Vite build pipeline, TypeScript config, signal store, domain types, CSS extraction
 - 2026-02-12: Executed 01-02 — Formatting, field-mapping, parsing libs + nav & upload page components
 - 2026-02-12: Executed 01-03 — Calculation engine, 11 Chart.js charts, PPT export — all as pure typed modules
+- 2026-02-12: Executed 01-04 — Adjustments page, results page, app wiring, deploy, human verification
+- 2026-02-12: Phase 1 verified — 14/14 must-haves passed, INFRA-01/02/03 marked complete
 
 ---
 *Last updated: 2026-02-12*

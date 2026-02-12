@@ -9,9 +9,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Infrastructure & Refactoring
 
-- [ ] **INFRA-01**: Codebase refactored from monolithic single file into modular TypeScript with build tooling (Vite)
-- [ ] **INFRA-02**: HTML, CSS, and JavaScript extracted from template literal into proper source files
-- [ ] **INFRA-03**: State management decoupled from DOM — global state object instead of reading from DOM elements
+- [x] **INFRA-01**: Codebase refactored from monolithic single file into modular TypeScript with build tooling (Vite)
+- [x] **INFRA-02**: HTML, CSS, and JavaScript extracted from template literal into proper source files
+- [x] **INFRA-03**: State management decoupled from DOM — global state object instead of reading from DOM elements
 - [ ] **INFRA-04**: Calculation engine is pure functions that accept inputs and return a results object (no DOM access)
 - [ ] **INFRA-05**: All downstream consumers (charts, tables, PPT, Excel) read from the shared results object
 
@@ -106,9 +106,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 — Foundation & Build Infrastructure | Pending |
-| INFRA-02 | Phase 1 — Foundation & Build Infrastructure | Pending |
-| INFRA-03 | Phase 1 — Foundation & Build Infrastructure | Pending |
+| INFRA-01 | Phase 1 — Foundation & Build Infrastructure | Complete |
+| INFRA-02 | Phase 1 — Foundation & Build Infrastructure | Complete |
+| INFRA-03 | Phase 1 — Foundation & Build Infrastructure | Complete |
 | INFRA-04 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
 | INFRA-05 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
 | INGEST-01 | Phase 2 — Data Ingestion Pipeline | Pending |
@@ -142,4 +142,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-12*
-*Last updated: 2026-02-12 after roadmap creation*
+*Last updated: 2026-02-12 after Phase 1 completion*
