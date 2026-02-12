@@ -19,11 +19,11 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 ## Current Position
 
 Phase: 2 of 6 (Data Ingestion Pipeline)
-Plan: 1 of 4 in phase 2
+Plan: 3 of 4 in phase 2
 Status: In progress
-Last activity: 2026-02-12 - Completed 02-01-PLAN.md (types & parsing utilities)
+Last activity: 2026-02-12 - Completed 02-03-PLAN.md (validation engine & store signals)
 
-Progress: █████░░░░░░░░░ 5/14 plans (36%)
+Progress: ███████░░░░░░░ 7/14 plans (50%)
 
 ## Accumulated Context
 
@@ -45,6 +45,10 @@ Progress: █████░░░░░░░░░ 5/14 plans (36%)
 - 2026-02-12: Never use new Date(string) for numeric date formats — regex extraction is deterministic
 - 2026-02-12: European currency format detected by comma-before-2-digits heuristic
 - 2026-02-12: Lotus 1-2-3 bug correction in Excel serial → Date conversion
+- 2026-02-12: Column-index lookup pattern: row[headers[mappings[fieldKey]]] bridges SheetJS header keys with index-based mappings
+- 2026-02-12: Composite overrides passed as Record<string,string> to keep validation decoupled from composite-fields
+- 2026-02-12: Optional field parse failures produce warnings but don't skip rows
+- 2026-02-12: Error categorization by field name substring matching (date/incurred/amount)
 
 ### Blockers
 None
@@ -55,7 +59,7 @@ None
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed 02-01-PLAN.md
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
 
 ## Session Log
@@ -66,6 +70,7 @@ Resume file: None
 - 2026-02-12: Executed 01-04 — Adjustments page, results page, app wiring, deploy, human verification
 - 2026-02-12: Phase 1 verified — 14/14 must-haves passed, INFRA-01/02/03 marked complete
 - 2026-02-12: Executed 02-01 — ParseResult<T> types, date-utils (6 format parsers + Excel serial), currency-utils (parens/European/$$)
+- 2026-02-12: Executed 02-03 — Validation engine (validateAndParseRow, accumulateErrors) + store signals (validationSummary, sheetScores, compositeFields, hasValidationErrors)
 
 ---
 *Last updated: 2026-02-12*
