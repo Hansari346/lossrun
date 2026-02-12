@@ -1,0 +1,386 @@
+@import "tailwindcss";
+
+/* === Extracted from monolith src/worker.js === */
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+  --bg: #f8fafc;
+  --fg: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --accent: #0f172a;
+  --accent-hover: #334155;
+  --accent-soft: #f1f5f9;
+  --muted: #64748b;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --input-bg: #ffffff;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--fg);
+  line-height: 1.5;
+}
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+.nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--card-border);
+}
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.nav-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: var(--fg);
+}
+.nav-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.page {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.page.active {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--fg);
+}
+p {
+  color: var(--muted);
+  margin-top: 0;
+  line-height: 1.6;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.col {
+  flex: 1 1 300px;
+  min-width: 300px;
+}
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  margin-bottom: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.collapse-toggle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--muted);
+  margin-left: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.card-header:hover .collapse-toggle {
+  background: #f1f5f9;
+  color: var(--fg);
+}
+.chart-content {
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+  max-height: 5000px;
+}
+.chart-content.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--fg);
+  display: block;
+  margin-bottom: 6px;
+}
+input[type="file"],
+select,
+input[type="number"],
+input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--input-bg);
+  color: var(--fg);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+select:focus,
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+}
+button {
+  border-radius: 8px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+button:hover:not([disabled]) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+button:active:not([disabled]) {
+  transform: translateY(0);
+}
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #cbd5e1;
+  color: var(--muted);
+}
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--fg);
+}
+.btn-secondary:hover:not([disabled]) {
+  background: #f8fafc;
+  border-color: var(--muted);
+}
+.pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  border: 1px solid var(--card-border);
+  font-size: 0.75rem;
+  color: var(--muted);
+  gap: 6px;
+  align-items: center;
+}
+.pill span.key {
+  color: var(--fg);
+  font-weight: 600;
+}
+.mapping-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  margin-top: 12px;
+}
+.mapping-table th,
+.mapping-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--card-border);
+}
+.mapping-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  background: #f8fafc;
+}
+.mapping-table tr:last-child td {
+  border-bottom: none;
+}
+.mapping-required {
+  color: var(--danger);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 6px;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.status {
+  font-size: 0.875rem;
+  margin-top: 8px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status.error {
+  color: var(--danger);
+}
+.status.ok {
+  color: var(--success);
+}
+.row3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.row2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .row3, .row2 {
+    grid-template-columns: 1fr;
+  }
+}
+.hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+}
+.switch input {
+  width: auto;
+  margin: 0;
+}
+.small {
+  font-size: 0.875rem;
+}
+.sep {
+  height: 1px;
+  background: var(--card-border);
+  margin: 24px 0;
+}
+.kpi {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+.kpi .tile {
+  background: #f8fafc;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.kpi .tile h3 {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+.kpi .tile .v {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--fg);
+  margin-top: auto;
+}
+.total {
+  color: var(--accent) !important;
+}
+canvas {
+  max-width: 100%;
+}
+.chart-container {
+  position: relative;
+  height: 350px;
+  width: 100%;
+}
+
+/* PPT Export Button Styles */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+.btn-ppt {
+  background: var(--accent);
+  color: white;
+}
+.btn-ppt:hover:not([disabled]) {
+  background: var(--accent-hover);
+}
+.btn-preset { background: #e2e8f0; color: #475569; padding: 4px 12px; font-size: 0.85rem; border-radius: 12px; margin-left: 4px; border: 1px solid #cbd5e1; }
+.btn-preset:hover { background: #cbd5e1; }
+.btn-preset.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+.presets { display: flex; align-items: center; }
+.advanced-toggle { cursor: pointer; color: #3b82f6; font-size: 0.9rem; margin-top: 8px; display: inline-block; text-decoration: underline; }
+.advanced-section { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e2e8f0; }
+.advanced-section.open { display: block; }
