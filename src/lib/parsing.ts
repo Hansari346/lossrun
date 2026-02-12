@@ -355,6 +355,8 @@ export function getFilteredData(): CanonicalRecord[] {
 /**
  * Auto-populate adjustment parameters based on ingested data.
  * Uses the most recent 2-3 years of data to compute annual baselines.
+ *
+ * Sets: avgCost (average direct cost per injury) and injuries (annual count).
  */
 export function populateAdjustmentsFromData(data: CanonicalRecord[]): void {
   if (!data.length) return;
@@ -389,12 +391,14 @@ export function populateAdjustmentsFromData(data: CanonicalRecord[]): void {
 
     adjustments.value = {
       ...adjustments.value,
-      observationCost: Math.round(avgCost),
+      avgCost: Math.round(avgCost),
+      injuries: claimCount,
     };
     return;
   }
 
   let avgCostPerYear = 0;
+  let avgInjuriesPerYear = 0;
 
   if (years.length >= 3) {
     const recentYears = years.slice(0, 3);
@@ -405,6 +409,7 @@ export function populateAdjustmentsFromData(data: CanonicalRecord[]): void {
       totalClaims += yearlyData[y].claimCount;
     });
     avgCostPerYear = totalCost / Math.max(totalClaims, 1);
+    avgInjuriesPerYear = totalClaims / recentYears.length;
   } else if (years.length >= 2) {
     const recentYears = years.slice(0, 2);
     let totalCost = 0;
@@ -414,14 +419,17 @@ export function populateAdjustmentsFromData(data: CanonicalRecord[]): void {
       totalClaims += yearlyData[y].claimCount;
     });
     avgCostPerYear = totalCost / Math.max(totalClaims, 1);
+    avgInjuriesPerYear = totalClaims / recentYears.length;
   } else {
     const yearData = yearlyData[years[0]];
     avgCostPerYear =
       yearData.totalIncurred / Math.max(yearData.claimCount, 1);
+    avgInjuriesPerYear = yearData.claimCount;
   }
 
   adjustments.value = {
     ...adjustments.value,
-    observationCost: Math.round(avgCostPerYear),
+    avgCost: Math.round(avgCostPerYear),
+    injuries: Math.round(avgInjuriesPerYear),
   };
 }
