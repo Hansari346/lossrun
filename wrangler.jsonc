@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "lossrun",
+  "account_id": "2f61b974b4cd37f4a353eef23c836f59",
   "compatibility_date": "2025-12-10",
   "assets": {
     "not_found_handling": "single-page-application"
