@@ -22,6 +22,8 @@ import {
   optionalFields,
   findBestMatch,
 } from "../lib/field-mapping";
+import { detectAllUnmappedFields } from "../lib/content-detection";
+import type { ContentMatch } from "../lib/content-detection";
 import type { FieldDefinition } from "../types";
 
 // Merge required + optional for the mapping table
@@ -36,6 +38,8 @@ export function UploadPage() {
   const overrides = useSignal<Record<string, number>>({});
   // Sample data from the last handleSheetSelect call (for auto-mapping)
   const sampleData = useSignal<any[][] | null>(null);
+  // Content-based fallback matches for unmapped fields
+  const contentMatches = useSignal<Record<string, ContentMatch>>({});
 
   // ── Handlers ────────────────────────────────────────────────────────────
 
@@ -45,6 +49,7 @@ export function UploadPage() {
     if (file) {
       overrides.value = {};
       sampleData.value = null;
+      contentMatches.value = {};
       handleFileSelect(file);
     }
   }
@@ -52,9 +57,47 @@ export function UploadPage() {
   function onSheetChange(e: Event) {
     const select = e.target as HTMLSelectElement;
     overrides.value = {};
+    contentMatches.value = {};
     const result = handleSheetSelect(select.value);
     sampleData.value = result?.sampleData ?? null;
     // compositeFields are written to store signal by handleSheetSelect directly
+  }
+
+  /**
+   * Run content-based detection for fields that weren't matched by headers.
+   * Called after header-based matching is computed (in render or on demand).
+   */
+  function computeContentFallbacks(
+    headers: string[],
+    sd: any[][] | null,
+  ): Record<string, ContentMatch> {
+    if (!sd || headers.length === 0) return {};
+
+    // First, find which fields ARE matched by headers
+    const headerMapped: Record<string, number> = {};
+    const mappedIndices = new Set<number>();
+    fieldKeys.forEach((key) => {
+      const fieldDef = allFields[key];
+      if (overrides.value[key] !== undefined && overrides.value[key] >= 0) {
+        headerMapped[key] = overrides.value[key];
+        mappedIndices.add(overrides.value[key]);
+      } else {
+        const match = findBestMatch(headers, sd, fieldDef);
+        if (match) {
+          headerMapped[key] = match.index;
+          mappedIndices.add(match.index);
+        }
+      }
+    });
+
+    // Find unmapped fields
+    const unmappedFields = fieldKeys.filter(
+      (key) => headerMapped[key] === undefined,
+    );
+    if (unmappedFields.length === 0) return {};
+
+    // Run content-based detection
+    return detectAllUnmappedFields(unmappedFields, sd, headers, mappedIndices);
   }
 
   function onApply() {
@@ -62,6 +105,7 @@ export function UploadPage() {
     const finalMapping: Record<string, number> = {};
     const headers = headerRow.value;
     const sd = sampleData.value;
+    const cMatches = contentMatches.value;
 
     fieldKeys.forEach((key) => {
       const fieldDef = allFields[key];
@@ -69,10 +113,13 @@ export function UploadPage() {
       if (overrides.value[key] !== undefined && overrides.value[key] >= 0) {
         finalMapping[key] = overrides.value[key];
       } else {
-        // Use auto-detected match
+        // Use header-based auto-detected match
         const match = findBestMatch(headers, sd, fieldDef);
         if (match) {
           finalMapping[key] = match.index;
+        } else if (cMatches[key]) {
+          // Fallback to content-based detection
+          finalMapping[key] = cMatches[key].index;
         }
       }
     });
@@ -93,6 +140,16 @@ export function UploadPage() {
   const sheets = sheetNames.value;
   const hasHeaders = headers.length > 0;
   const sd = sampleData.value;
+
+  // Compute content-based fallbacks when sample data changes
+  // (memoized by signal — only recalculates when sd or headers change)
+  if (hasHeaders && sd && Object.keys(contentMatches.value).length === 0) {
+    const detected = computeContentFallbacks(headers, sd);
+    if (Object.keys(detected).length > 0) {
+      contentMatches.value = detected;
+    }
+  }
+  const cMatches = contentMatches.value;
 
   // ── Render ──────────────────────────────────────────────────────────────
 
@@ -230,12 +287,19 @@ export function UploadPage() {
                     {fieldKeys.map((key) => {
                       const meta = allFields[key];
                       const autoMatch = findBestMatch(headers, sd, meta);
+                      const contentMatch = cMatches[key] || null;
+                      const isContentFallback =
+                        !autoMatch &&
+                        contentMatch !== null &&
+                        overrides.value[key] === undefined;
                       const currentIdx =
                         overrides.value[key] !== undefined
                           ? overrides.value[key]
                           : autoMatch
                             ? autoMatch.index
-                            : -1;
+                            : contentMatch
+                              ? contentMatch.index
+                              : -1;
 
                       return (
                         <tr key={key}>
@@ -248,6 +312,14 @@ export function UploadPage() {
                           <td>
                             <select
                               value={String(currentIdx)}
+                              style={
+                                isContentFallback
+                                  ? {
+                                      borderColor: "#e69500",
+                                      backgroundColor: "#fffbf0",
+                                    }
+                                  : {}
+                              }
                               onChange={(e) =>
                                 setOverride(
                                   key,
@@ -269,8 +341,31 @@ export function UploadPage() {
                                 </option>
                               ))}
                             </select>
+                            {isContentFallback && (
+                              <span
+                                style={{
+                                  display: "block",
+                                  fontSize: "0.75rem",
+                                  color: "#b37400",
+                                  marginTop: "2px",
+                                }}
+                                title={contentMatch.reason}
+                              >
+                                detected by content
+                              </span>
+                            )}
                           </td>
-                          <td>{meta.description}</td>
+                          <td>
+                            {isContentFallback ? (
+                              <span
+                                style={{ color: "#b37400", fontSize: "0.85em" }}
+                              >
+                                {contentMatch.reason}
+                              </span>
+                            ) : (
+                              meta.description
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
