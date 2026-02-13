@@ -23,6 +23,7 @@ import type {
   YearlyBreakdown,
   CategoryBreakdown,
   SiteBreakdown,
+  DimensionKey,
 } from "../types";
 
 // ---------------------------------------------------------------------------
@@ -267,6 +268,7 @@ function buildSiteComparison(data: CanonicalRecord[]): SiteBreakdown[] {
 export function computeResults(
   data: CanonicalRecord[],
   params: AdjustmentParams,
+  dimensions?: Record<DimensionKey, boolean>,
 ): CalculationResults {
   const isCustomer = params.isExistingCustomer;
 
@@ -420,11 +422,29 @@ export function computeResults(
     : null;
 
   // --- Data aggregation for charts ---
-  const yearlyData = buildYearlyData(data);
-  const categoryBreakdown = buildCategoryBreakdown(data, "claim_category");
-  const bodyPartBreakdown = buildCategoryBreakdown(data, "body_part");
-  const causeBreakdown = buildCategoryBreakdown(data, "cause_of_loss");
-  const siteComparison = buildSiteComparison(data);
+  // Default: all dimensions active (backward compatibility when no dims passed)
+  const dims: Record<DimensionKey, boolean> = dimensions ?? {
+    cause_of_loss: true,
+    body_part: true,
+    claim_category: true,
+    lost_days: true,
+    site_comparison: true,
+    loss_description: true,
+  };
+
+  const yearlyData = buildYearlyData(data); // always computed (core)
+  const categoryBreakdown = dims.claim_category
+    ? buildCategoryBreakdown(data, "claim_category")
+    : [];
+  const bodyPartBreakdown = dims.body_part
+    ? buildCategoryBreakdown(data, "body_part")
+    : [];
+  const causeBreakdown = dims.cause_of_loss
+    ? buildCategoryBreakdown(data, "cause_of_loss")
+    : [];
+  const siteComparison = dims.site_comparison
+    ? buildSiteComparison(data)
+    : [];
 
   return {
     // KPI tile values
@@ -470,6 +490,9 @@ export function computeResults(
     bodyPartBreakdown,
     causeBreakdown,
     siteComparison,
+
+    // Dimension metadata for downstream consumers (DIM-02)
+    dimensions: dims,
   };
 }
 
