@@ -12,23 +12,23 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **INFRA-01**: Codebase refactored from monolithic single file into modular TypeScript with build tooling (Vite)
 - [x] **INFRA-02**: HTML, CSS, and JavaScript extracted from template literal into proper source files
 - [x] **INFRA-03**: State management decoupled from DOM — global state object instead of reading from DOM elements
-- [ ] **INFRA-04**: Calculation engine is pure functions that accept inputs and return a results object (no DOM access)
-- [ ] **INFRA-05**: All downstream consumers (charts, tables, PPT, Excel) read from the shared results object
+- [x] **INFRA-04**: Calculation engine is pure functions that accept inputs and return a results object (no DOM access)
+- [x] **INFRA-05**: All downstream consumers (charts, tables, PPT, Excel) read from the shared results object
 
 ### Data Ingestion
 
-- [ ] **INGEST-01**: Improved fuzzy column mapping with expanded synonym dictionary covering real carrier naming conventions
-- [ ] **INGEST-02**: Generic/composite field parsing — detect "Key: Value" patterns in columns like "Generic Field 1" and extract them as separate mappable dimensions
-- [ ] **INGEST-03**: Smart multi-sheet detection — auto-identify which sheets contain claims-level data vs. summary/cover sheets
-- [ ] **INGEST-04**: Data validation with quality summary — flag invalid dates, unparseable amounts, missing required fields, with per-row error counts
-- [ ] **INGEST-05**: Robust date parsing — handle MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, SheetJS serial numbers, and various date formats seen in carrier files
-- [ ] **INGEST-06**: Robust currency parsing — handle $, $$, parenthetical negatives, European formatting, and comma separators
+- [x] **INGEST-01**: Improved fuzzy column mapping with expanded synonym dictionary covering real carrier naming conventions
+- [x] **INGEST-02**: Generic/composite field parsing — detect "Key: Value" patterns in columns like "Generic Field 1" and extract them as separate mappable dimensions
+- [x] **INGEST-03**: Smart multi-sheet detection — auto-identify which sheets contain claims-level data vs. summary/cover sheets
+- [x] **INGEST-04**: Data validation with quality summary — flag invalid dates, unparseable amounts, missing required fields, with per-row error counts
+- [x] **INGEST-05**: Robust date parsing — handle MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, SheetJS serial numbers, and various date formats seen in carrier files
+- [x] **INGEST-06**: Robust currency parsing — handle $, $$, parenthetical negatives, European formatting, and comma separators
 
 ### Dimension Detection
 
-- [ ] **DIM-01**: After column mapping, auto-detect which analysis dimensions are available in the data (cause of loss, body part, department, lost days, etc.)
-- [ ] **DIM-02**: Dimension availability drives downstream behavior — charts, tables, PPT slides, and exports adapt to what's available
-- [ ] **DIM-03**: User can see which dimensions were detected and confirm/override
+- [x] **DIM-01**: After column mapping, auto-detect which analysis dimensions are available in the data (cause of loss, body part, department, lost days, etc.)
+- [x] **DIM-02**: Dimension availability drives downstream behavior — charts, tables, PPT slides, and exports adapt to what's available
+- [x] **DIM-03**: User can see which dimensions were detected and confirm/override
 
 ### Visualization
 
@@ -109,17 +109,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-01 | Phase 1 — Foundation & Build Infrastructure | Complete |
 | INFRA-02 | Phase 1 — Foundation & Build Infrastructure | Complete |
 | INFRA-03 | Phase 1 — Foundation & Build Infrastructure | Complete |
-| INFRA-04 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
-| INFRA-05 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
-| INGEST-01 | Phase 2 — Data Ingestion Pipeline | Pending |
-| INGEST-02 | Phase 2 — Data Ingestion Pipeline | Pending |
-| INGEST-03 | Phase 2 — Data Ingestion Pipeline | Pending |
-| INGEST-04 | Phase 2 — Data Ingestion Pipeline | Pending |
-| INGEST-05 | Phase 2 — Data Ingestion Pipeline | Pending |
-| INGEST-06 | Phase 2 — Data Ingestion Pipeline | Pending |
-| DIM-01 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
-| DIM-02 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
-| DIM-03 | Phase 3 — Calculation Engine & Dimension Detection | Pending |
+| INFRA-04 | Phase 3 — Calculation Engine & Dimension Detection | Complete |
+| INFRA-05 | Phase 3 — Calculation Engine & Dimension Detection | Complete |
+| INGEST-01 | Phase 2 — Data Ingestion Pipeline | Complete |
+| INGEST-02 | Phase 2 — Data Ingestion Pipeline | Complete |
+| INGEST-03 | Phase 2 — Data Ingestion Pipeline | Complete |
+| INGEST-04 | Phase 2 — Data Ingestion Pipeline | Complete |
+| INGEST-05 | Phase 2 — Data Ingestion Pipeline | Complete |
+| INGEST-06 | Phase 2 — Data Ingestion Pipeline | Complete |
+| DIM-01 | Phase 3 — Calculation Engine & Dimension Detection | Complete |
+| DIM-02 | Phase 3 — Calculation Engine & Dimension Detection | Complete |
+| DIM-03 | Phase 3 — Calculation Engine & Dimension Detection | Complete |
 | VIS-01 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
 | VIS-02 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
 | VIS-03 | Phase 4 — Adaptive Visualization & Data Tables | Pending |
@@ -142,4 +142,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-12*
-*Last updated: 2026-02-12 after Phase 1 completion*
+*Last updated: 2026-02-13 after Phase 3 completion*
