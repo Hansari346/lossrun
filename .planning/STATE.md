@@ -3,7 +3,7 @@
 ## Project Reference
 See: .planning/PROJECT.md (updated 2026-02-12)
 **Core value:** Reliably ingest any carrier's loss run format and produce compelling analysis
-**Current focus:** Phase 1 complete — ready for Phase 2
+**Current focus:** Phase 3 in progress — dimension detection & calculation engine
 
 ## Phase Status
 
@@ -11,19 +11,19 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 |-------|--------|---------|-----------|
 | 1 — Foundation & Build Infrastructure | Complete | 2026-02-12 | 2026-02-12 |
 | 2 — Data Ingestion Pipeline | Complete | 2026-02-12 | 2026-02-12 |
-| 3 — Calculation Engine & Dimension Detection | Not Started | — | — |
+| 3 — Calculation Engine & Dimension Detection | In Progress | 2026-02-13 | — |
 | 4 — Adaptive Visualization & Data Tables | Not Started | — | — |
 | 5 — PowerPoint Export | Not Started | — | — |
 | 6 — Excel Export | Not Started | — | — |
 
 ## Current Position
 
-Phase: 2 of 6 (Data Ingestion Pipeline) — COMPLETE, ready for Phase 3
-Plan: 4 of 4 in phase 2 (all complete)
-Status: Phase 2 complete, pending verification
-Last activity: 2026-02-12 - Completed 02-04-PLAN.md (integration + content-based fallback detection)
+Phase: 3 of 6 (Calculation Engine & Dimension Detection)
+Plan: 1 of 2 in phase 3 (03-01 complete)
+Status: In progress — 03-01 complete, 03-02 pending
+Last activity: 2026-02-13 - Completed 03-01-PLAN.md (dimension types + detection + dimension-aware computeResults)
 
-Progress: ████████████░░ 12/14 plans (~86% through Phase 2 of 6 total)
+Progress: █████████░░░░░ 9/10 known plans complete
 
 ## Accumulated Context
 
@@ -55,6 +55,10 @@ Progress: ████████████░░ 12/14 plans (~86% through P
 - 2026-02-12: Content-based detection scores capped at 25-45 (below header threshold of 50) so header matches always win
 - 2026-02-12: Detection priority order prevents two fields claiming the same column
 - 2026-02-12: Domain keyword Sets (body parts, causes, categories) for content-based field detection — extensible for new carriers
+- 2026-02-13: Dimension threshold: available when populated >= max(3, ceil(total*0.05))
+- 2026-02-13: site_comparison requires distinctValues > 1 — single-site data has no comparison value
+- 2026-02-13: Default all-true dims when parameter omitted — zero-risk backward compatibility
+- 2026-02-13: dimensions field on CalculationResults is Record<DimensionKey, boolean> — lightweight for downstream checks
 
 ### Blockers
 None
@@ -64,8 +68,8 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-12
-Stopped at: Phase 2 complete, ready for verification then Phase 3
+Last session: 2026-02-13
+Stopped at: Completed 03-01-PLAN.md, ready for 03-02
 Resume file: None
 
 ## Session Log
@@ -80,6 +84,7 @@ Resume file: None
 - 2026-02-12: Executed 02-03 — Validation engine (validateAndParseRow, accumulateErrors) + store signals (validationSummary, sheetScores, compositeFields, hasValidationErrors)
 - 2026-02-12: Executed 02-04 — Integration: parsing pipeline rewrite + upload UI with validation feedback + content-based fallback column detection for all 9 fields
 - 2026-02-12: Phase 2 deployed to lossrun.voxelplatform.com — all 4 plans complete
+- 2026-02-13: Executed 03-01 — DimensionKey types, detectDimensions() pure function, dimension-gated computeResults() with backward compat
 
 ---
-*Last updated: 2026-02-12*
+*Last updated: 2026-02-13*
