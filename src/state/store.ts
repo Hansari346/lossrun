@@ -1,4 +1,7 @@
-import { signal, computed } from "@preact/signals";
+import { signal, computed, batch } from "@preact/signals";
+import { detectDimensions, DIMENSION_KEYS } from "../lib/dimensions";
+import type { DimensionKey, DimensionAvailability } from "../types";
+import { computeResults, getFilteredData } from "../lib/calculations";
 import type {
   CanonicalRecord,
   Mappings,
@@ -8,6 +11,8 @@ import type {
   SheetScore,
   CompositeField,
 } from "../types";
+
+export { batch } from "@preact/signals";
 
 // === Core data signals (replacing 6 global variables from monolith) ===
 export const workbook = signal<any>(null);
@@ -50,15 +55,11 @@ export const adjustments = signal<AdjustmentParams>({
   totalAnnualObs: 0,
 });
 
-// === Calculation results ===
-export const results = signal<CalculationResults | null>(null);
-
 // === Site filtering ===
 export const selectedSite = signal<string>("all");
 export const availableSites = signal<string[]>([]);
 
 // === UI state ===
-export const isCalculating = signal<boolean>(false);
 export const statusMessage = signal<string>("");
 
 // === Validation state ===
@@ -69,6 +70,45 @@ export const sheetScores = signal<SheetScore[]>([]);
 
 // === Composite field state ===
 export const compositeFields = signal<CompositeField[]>([]);
+
+// === Dimension detection state ===
+export const dimensionOverrides = signal<Partial<Record<DimensionKey, boolean>>>({});
+
+// === Derived: dimension detection (recomputes only when canonicalData changes) ===
+export const detectedDimensions = computed<DimensionAvailability | null>(() => {
+  const data = canonicalData.value;
+  if (data.length === 0) return null;
+  return detectDimensions(data);
+});
+
+// === Derived: active dimensions (merges detected + user overrides) ===
+export const activeDimensions = computed<Record<DimensionKey, boolean>>(() => {
+  const detected = detectedDimensions.value;
+  if (!detected) {
+    return Object.fromEntries(DIMENSION_KEYS.map((k) => [k, false])) as Record<DimensionKey, boolean>;
+  }
+  const overrides = dimensionOverrides.value;
+  return Object.fromEntries(
+    DIMENSION_KEYS.map((k) => [k, overrides[k] ?? detected[k].available])
+  ) as Record<DimensionKey, boolean>;
+});
+
+// === Reactive results — auto-recomputes when inputs change ===
+export const results = computed<CalculationResults | null>(() => {
+  const data = canonicalData.value;
+  if (data.length === 0) return null;
+
+  const filtered = getFilteredData(data, selectedSite.value);
+  const params = adjustments.value;
+  const dims = activeDimensions.value;
+
+  try {
+    return computeResults(filtered, params, dims);
+  } catch (e) {
+    console.error("Calculation error:", e);
+    return null;
+  }
+});
 
 // === Derived state ===
 export const hasData = computed(() => canonicalData.value.length > 0);
@@ -90,11 +130,11 @@ export function resetState() {
   canonicalData.value = [];
   chartInstances.value = {};
   currentPage.value = 1;
-  results.value = null;
   selectedSite.value = "all";
   availableSites.value = [];
   statusMessage.value = "";
   validationSummary.value = null;
   sheetScores.value = [];
   compositeFields.value = [];
+  dimensionOverrides.value = {};
 }

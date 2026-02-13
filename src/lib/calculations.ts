@@ -8,13 +8,6 @@
  * ZERO DOM access. All inputs come as function parameters or store signals.
  */
 
-import {
-  canonicalData,
-  adjustments,
-  selectedSite,
-  results,
-  isCalculating,
-} from "../state/store";
 import type {
   CanonicalRecord,
   AdjustmentParams,
@@ -496,25 +489,3 @@ export function computeResults(
   };
 }
 
-// ---------------------------------------------------------------------------
-// Orchestrator — side-effecting wrapper
-// ---------------------------------------------------------------------------
-
-/**
- * Orchestrator: reads from store, computes, writes results to store.
- * This is the only function with side effects (signal writes).
- */
-export function calculateResults(): void {
-  isCalculating.value = true;
-  try {
-    const data = getFilteredData(
-      canonicalData.value,
-      selectedSite.value,
-    );
-    const params = adjustments.value;
-    const result = computeResults(data, params);
-    results.value = result;
-  } finally {
-    isCalculating.value = false;
-  }
-}
