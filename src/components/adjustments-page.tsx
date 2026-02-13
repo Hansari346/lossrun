@@ -5,13 +5,14 @@ import {
   canonicalData,
   selectedSite,
   availableSites,
+  batch,
 } from "../state/store";
 import {
   getPresetValues,
-  calculateResults,
   calculateObservationCost,
   getFilteredData,
 } from "../lib/calculations";
+import { DimensionPanel } from "./dimension-panel";
 import type { AdjustmentParams } from "../types";
 
 const MONTHS = [
@@ -52,11 +53,13 @@ export function AdjustmentsPage() {
     return parseFloat((e.target as HTMLInputElement).value) || 0;
   };
 
-  // Apply a preset
+  // Apply a preset (batched — single reactive update, no intermediate flicker)
   const applyPreset = (preset: "conservative" | "balanced" | "aggressive") => {
     activePreset.value = preset;
     const vals = getPresetValues(preset);
-    adjustments.value = { ...adjustments.value, ...vals };
+    batch(() => {
+      adjustments.value = { ...adjustments.value, ...vals };
+    });
   };
 
   // Calculate obs total from calculator inputs
@@ -66,9 +69,8 @@ export function AdjustmentsPage() {
     adjustments.value = { ...adjustments.value, totalAnnualObs: total };
   };
 
-  // Calculate and navigate to results
+  // Navigate to results (calculation is reactive — already computed)
   const onCalculate = () => {
-    calculateResults();
     currentPage.value = 3;
   };
 
@@ -91,6 +93,9 @@ export function AdjustmentsPage() {
         Adjust calculation assumptions and parameters. Data from the ingested
         loss run will be used to calculate baseline metrics.
       </p>
+
+      {/* Detected Dimensions */}
+      <DimensionPanel />
 
       {/* Site filter */}
       {availableSites.value.length > 1 && (
@@ -579,7 +584,7 @@ export function AdjustmentsPage() {
           onClick={onCalculate}
           style={{ padding: "12px 24px", fontSize: "1rem" }}
         >
-          Calculate &amp; View Results →
+          View Results →
         </button>
       </div>
     </div>

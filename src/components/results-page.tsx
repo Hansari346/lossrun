@@ -93,8 +93,7 @@ export function ResultsPage() {
     return (
       <div id="page3" class="page active">
         <div class="status">
-          No results yet. Go to Adjustments and click "Calculate &amp; View
-          Results".
+          No results yet. Upload data and visit the Adjustments page first.
         </div>
       </div>
     );
