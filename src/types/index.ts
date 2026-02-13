@@ -114,6 +114,9 @@ export interface CalculationResults {
   causeBreakdown: CategoryBreakdown[];
   // Site comparison data
   siteComparison: SiteBreakdown[];
+
+  // Dimension metadata — consumers check this before rendering
+  dimensions: Record<DimensionKey, boolean>;
 }
 
 export interface PaybackData {
@@ -147,6 +150,27 @@ export interface SiteBreakdown {
   incurred: number;
   avgCost: number;
 }
+
+// ── Dimension Detection Types ──────────────────────────────────────────
+
+/** All possible analysis dimensions beyond the 3 required fields */
+export type DimensionKey =
+  | "cause_of_loss"
+  | "body_part"
+  | "claim_category"
+  | "lost_days"
+  | "site_comparison"
+  | "loss_description";
+
+export interface DimensionInfo {
+  available: boolean;
+  recordCount: number;
+  totalRecords: number;
+  coverage: number; // recordCount / totalRecords (0-1)
+  distinctValues: number; // cardinality of the field's values
+}
+
+export type DimensionAvailability = Record<DimensionKey, DimensionInfo>;
 
 // ── Ingestion Pipeline Types ──────────────────────────────────────────
 
