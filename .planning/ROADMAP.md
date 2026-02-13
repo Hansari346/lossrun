@@ -101,8 +101,8 @@ Plans:
 **Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 03-01-PLAN.md — Dimension types, detection module, and dimension-aware calculation engine
-- [ ] 03-02-PLAN.md — Reactive store signals, dimension panel UI, adjustments & results page wiring
+- [x] 03-01-PLAN.md — Dimension types, detection module, and dimension-aware calculation engine
+- [x] 03-02-PLAN.md — Reactive store signals, dimension panel UI, adjustments & results page wiring
 
 **Implementation Notes:**
 - The calculation engine must be pure functions: accept canonical data + adjustments → return Results Object

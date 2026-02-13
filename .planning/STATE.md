@@ -11,19 +11,19 @@ See: .planning/PROJECT.md (updated 2026-02-12)
 |-------|--------|---------|-----------|
 | 1 — Foundation & Build Infrastructure | Complete | 2026-02-12 | 2026-02-12 |
 | 2 — Data Ingestion Pipeline | Complete | 2026-02-12 | 2026-02-12 |
-| 3 — Calculation Engine & Dimension Detection | In Progress | 2026-02-13 | — |
+| 3 — Calculation Engine & Dimension Detection | Complete | 2026-02-13 | 2026-02-13 |
 | 4 — Adaptive Visualization & Data Tables | Not Started | — | — |
 | 5 — PowerPoint Export | Not Started | — | — |
 | 6 — Excel Export | Not Started | — | — |
 
 ## Current Position
 
-Phase: 3 of 6 (Calculation Engine & Dimension Detection)
-Plan: 1 of 2 in phase 3 (03-01 complete)
-Status: In progress — 03-01 complete, 03-02 pending
-Last activity: 2026-02-13 - Completed 03-01-PLAN.md (dimension types + detection + dimension-aware computeResults)
+Phase: 3 of 6 (Calculation Engine & Dimension Detection) — COMPLETE
+Plan: 2 of 2 in phase 3 (both complete)
+Status: Phase 3 complete — ready for Phase 4
+Last activity: 2026-02-13 - Completed 03-02-PLAN.md (reactive engine, dimension panel, adjustments/results wiring)
 
-Progress: █████████░░░░░ 9/10 known plans complete
+Progress: ██████████░░░░ 10/10 known plans complete (Phases 1-3 done)
 
 ## Accumulated Context
 
@@ -60,6 +60,12 @@ Progress: █████████░░░░░ 9/10 known plans complete
 - 2026-02-13: Default all-true dims when parameter omitted — zero-risk backward compatibility
 - 2026-02-13: dimensions field on CalculationResults is Record<DimensionKey, boolean> — lightweight for downstream checks
 
+- 2026-02-13: results is a computed signal (not writable) — prevents stale data, single source of truth
+- 2026-02-13: isCalculating signal removed — synchronous reactive computation has no loading state
+- 2026-02-13: batch() for preset application — single recomputation instead of per-field
+- 2026-02-13: calculations.ts has zero store imports — pure function module pattern established
+- 2026-02-13: "View Results" replaces "Calculate & View Results" — calculation is always reactive
+
 ### Blockers
 None
 
@@ -69,7 +75,7 @@ None
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 03-01-PLAN.md, ready for 03-02
+Stopped at: Phase 3 complete — ready for Phase 4 (Adaptive Visualization)
 Resume file: None
 
 ## Session Log
@@ -85,6 +91,8 @@ Resume file: None
 - 2026-02-12: Executed 02-04 — Integration: parsing pipeline rewrite + upload UI with validation feedback + content-based fallback column detection for all 9 fields
 - 2026-02-12: Phase 2 deployed to lossrun.voxelplatform.com — all 4 plans complete
 - 2026-02-13: Executed 03-01 — DimensionKey types, detectDimensions() pure function, dimension-gated computeResults() with backward compat
+- 2026-02-13: Executed 03-02 — Reactive computed signals, DimensionPanel component, batch presets, adjustments/results page wiring
+- 2026-02-13: Phase 3 complete — INFRA-04, INFRA-05, DIM-01, DIM-02, DIM-03 all satisfied. Deployed to production.
 
 ---
 *Last updated: 2026-02-13*
